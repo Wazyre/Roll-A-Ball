@@ -7,13 +7,13 @@ using TMPro;
 public class PlayerController : MonoBehaviour
 {
     [Header ("Movement")] 
-    [SerializeField] float moveSpeed = 10f;
-    [SerializeField] float jumpSpeed = 8f;
-    [SerializeField] float jumpingGravityMod = 3f; //For double jump
-    [SerializeField] float fallingGravityMod = 4f; //Speed of falling
+    [SerializeField] float moveSpeed = 200f;
+    [SerializeField] float jumpSpeed = 70f;
+    [SerializeField] float jumpingGravityMod = 60f; //For double jump
+    [SerializeField] float fallingGravityMod = 20f; //Speed of falling
     [SerializeField] float jumpCache;
-    [SerializeField] int maxJumps = 2;
-    [SerializeField] int jumpCount = 0;
+    // [SerializeField] int maxJumps = 2;
+    // [SerializeField] int jumpCount = 0;
     [SerializeField] bool doubleJump = false;
     //[SerializeField] bool isJumping = false;
     [SerializeField] Vector2 movement = Vector2.zero;
@@ -30,7 +30,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Transform playerTransform;
 
     [Header ("Misc")]
-    //[SerializeField] InputManager control;
     [SerializeField] int count = 0;
     [SerializeField] float collisionDetectionRad = 0.5f;
     [SerializeField] TextMeshProUGUI countText;
@@ -60,26 +59,8 @@ public class PlayerController : MonoBehaviour
         restartBtn.SetActive(false);
     }
 
-    // void OnEnable() {
-        
-    // }
-
-    // void OnMove(InputValue input) {
-    //     movement = input.Get<Vector2>(); // Get the direction vector from input
-    // }
-
-    // void OnJump(InputAction.CallbackContext input) {
-    //     // if (control.jumpOn) {
-    //     //     jumpInputCache = jumpInputLenience;
-    //     // } else {
-    //     //     jumpInputCache -= Time.deltaTime;
-    //     // }
-    //     isJumping = input.action.triggered;
-    // }
-
     Vector2 MovementDir() {
         return input.Player.Move.ReadValue<Vector2>();
-        //movement = movement.normalized;
     }
 
     bool isJumping() {
@@ -89,33 +70,37 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (isJumping() && controller.isGrounded) // If player presses space
-        {
+        if (isJumping() && CheckGrounded()) {// If player presses space
             jumpVelocity = jumpDir.normalized * jumpSpeed;
             jumpCache = Time.time + 0.3f; 
         }
         
-        else if (!controller.isGrounded && isJumping() && !doubleJump && Time.time > jumpCache) { // Player is on the ground
-            jumpVelocity = jumpDir.normalized * jumpSpeed;
+        else if (!CheckGrounded() && isJumping() && !doubleJump && Time.time > jumpCache) { // Player is in the air
+            jumpVelocity = jumpDir.normalized * jumpingGravityMod;
             doubleJump = true;
         } 
-        else if (controller.isGrounded){ // Player is falling down 
-            Debug.Log("Grounded");
+        else if (CheckGrounded()) { // Player is grounded but not jumping
             jumpVelocity = Vector3.zero;
-            jumpCount = 0;
             doubleJump = false;
         }
-        else {
-            Debug.Log("Falling");
+        else { // Player is falling down 
             jumpVelocity += Physics.gravity * fallingGravityMod * Time.fixedDeltaTime;
         }
 
         movement = MovementDir() * moveSpeed;
-        Vector3 dir = new Vector3(movement.x, jumpVelocity.y, movement.y);
+        Vector3 dir = new Vector3(movement.x, 0.0f, movement.y);
 
-        controller.Move(dir * Time.fixedDeltaTime); // Moving Controller
-        //rb.AddForce(dir * moveSpeed * Time.fixedDeltaTime);
-        //rb.AddForce(jumpSpeed * Time.fixedDeltaTime);
+        if (movement.x != 0 || movement.y != 0 || jumpVelocity != Vector3.zero) {
+            rb.AddForce(dir * Time.fixedDeltaTime);
+        }
+        else {
+            rb.velocity *= 0.9f;
+        }
+        rb.AddForce(jumpVelocity * Time.fixedDeltaTime, ForceMode.Impulse);
+    }
+
+    bool CheckGrounded() {
+        return Physics.CheckSphere(playerTransform.position, collisionDetectionRad, groundMask);
     }
 
     void OnTriggerEnter(Collider col) {

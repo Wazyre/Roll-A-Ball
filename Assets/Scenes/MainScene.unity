@@ -1198,7 +1198,6 @@ GameObject:
   - component: {fileID: 1087644968}
   - component: {fileID: 1087644967}
   - component: {fileID: 1087644965}
-  - component: {fileID: 1087644971}
   - component: {fileID: 1087644972}
   - component: {fileID: 1087644973}
   m_Layer: 0
@@ -1223,7 +1222,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!135 &1087644967
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -1303,37 +1302,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1087644971
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1087644964}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Actions: {fileID: -944628639613478452, guid: bc164966e5cdf1c4781cbfce46d7e3b7,
-    type: 3}
-  m_NotificationBehavior: 0
-  m_UIInputModule: {fileID: 0}
-  m_DeviceLostEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_DeviceRegainedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_ControlsChangedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_ActionEvents: []
-  m_NeverAutoSwitchControlSchemes: 0
-  m_DefaultControlScheme: Keyboard&Mouse
-  m_DefaultActionMap: Player
-  m_SplitScreenIndex: -1
-  m_Camera: {fileID: 0}
 --- !u!114 &1087644972
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1361,25 +1329,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6fff2977dc3fa234aba09d883237a0c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 10
-  jumpSpeed: 8
-  jumpingGravityMod: 3
-  fallingGravityMod: 4
-  jumpInputCache: 0
-  maxJumps: 1
-  jumpCount: 0
-  isGrounded: 1
-  isJumping: 0
+  moveSpeed: 200
+  jumpSpeed: 70
+  jumpingGravityMod: 60
+  fallingGravityMod: 20
+  jumpCache: 0
+  doubleJump: 0
   movement: {x: 0, y: 0}
   jumpVelocity: {x: 0, y: 0, z: 0}
   jumpDir: {x: 0, y: 1, z: 0}
+  controller: {fileID: 0}
   rb: {fileID: 0}
   groundMask:
     serializedVersion: 2
     m_Bits: 0
-  groundTransform: {fileID: 0}
+  playerTransform: {fileID: 0}
   count: 0
-  collisionDetectionRad: 0.1
+  collisionDetectionRad: 0.5
   countText: {fileID: 0}
   winTextObject: {fileID: 0}
   restartBtn: {fileID: 0}
